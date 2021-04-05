@@ -16,6 +16,10 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 
+const isDev=process.env.NODE_ENV==='development';
+
+require('../backend/server');
+
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -74,10 +78,11 @@ const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     webPreferences: {
       nodeIntegration: true,
+      webSecurity:false,
     },
   });
 
-  mainWindow.loadURL(`file://${__dirname}/index.html`);
+  isDev ? mainWindow.loadURL('http://localhost:5000'):mainWindow.loadURL(`file://${__dirname}/index.html`);
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
